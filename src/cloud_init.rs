@@ -115,8 +115,10 @@ impl CloudDataBuilder {
         self.add_write_file(write_file);
 
         // Enable and start service
-        for enable_cmds in [String::from("systemctl enable fail2ban"),
-            String::from("systemctl start fail2ban")] {
+        for enable_cmds in [
+            String::from("systemctl enable fail2ban"),
+            String::from("systemctl start fail2ban"),
+        ] {
             self.add_runcmd(enable_cmds);
         }
         self
