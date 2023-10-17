@@ -1,0 +1,35 @@
+#cloud-config
+chpasswd:
+  expire: false
+ssh_pwauth: false
+disable_root: true
+package_update: true
+package_upgrade: true
+package_reboot_if_required: true
+packages:
+  - curl
+  - jq
+  - fail2ban
+write_files:
+  - path: /etc/fail2ban/jail.d/ssh.conf
+    content: |-
+      [sshd]
+      enabled = true
+      port = ssh
+      filter = sshd
+      logpath = /var/log/auth.log
+      maxretry = 3
+      bantime = 600
+users:
+  - name: infra
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups:
+      - adm
+      - sudo
+    shell: /bin/bash
+    ssh_import_id:
+      - gh:jontze
+      - gh:mkqavi
+runcmd:
+  - systemctl enable fail2ban
+  - systemctl start fail2ban
