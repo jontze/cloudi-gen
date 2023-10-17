@@ -1,6 +1,7 @@
 use bat::PrettyPrinter;
 
 #[derive(Default, Builder, Serialize, Debug, Clone)]
+#[builder(build_fn(private, name = "build_internal"))]
 pub(crate) struct CloudData {
     #[builder(default)]
     chpasswd: ChPasswd,
@@ -31,6 +32,8 @@ impl CloudData {
 
         let mut printer = PrettyPrinter::new();
         printer.input_from_bytes(file_content.as_bytes());
+        printer.colored_output(false);
+
         if is_pretty {
             printer.grid(true);
             printer.language("yaml");
@@ -42,10 +45,83 @@ impl CloudData {
 }
 
 impl CloudDataBuilder {
-    pub(crate) fn add_package(&mut self, package: String) {
+    pub(crate) fn build(mut self) -> Result<CloudData, CloudDataBuilderError> {
+        if let Some(runcmds) = &self.runcmd {
+            if !runcmds.is_empty() {
+                self.add_runcmd(String::from("reboot"));
+            }
+        }
+        let cloud_data = self.build_internal()?;
+        Ok(cloud_data)
+    }
+
+    pub(crate) fn add_runcmd(&mut self, runcmd: String) -> &mut Self {
+        self.runcmd
+            .get_or_insert_with(std::vec::Vec::new)
+            .push(runcmd);
+        self
+    }
+
+    pub(crate) fn add_package(&mut self, package: String) -> &mut Self {
         self.packages
             .get_or_insert_with(std::vec::Vec::new)
             .push(package);
+        self
+    }
+
+    pub(crate) fn add_write_file(&mut self, write_file: WriteFile) -> &mut Self {
+        self.write_files
+            .get_or_insert_with(std::vec::Vec::new)
+            .push(write_file);
+        self
+    }
+
+    pub(crate) fn disallow_ssh_agent_forward(&mut self) -> &mut Self {
+        let disable_agent_forward = String::from(
+            "sed -i -e '/^\\(#\\|\\)AllowAgentForwarding/s/^.*$/AllowAgentForwarding no/' /etc/ssh/sshd_config",
+        );
+        self.add_runcmd(disable_agent_forward);
+        self
+    }
+
+    pub(crate) fn disallow_ssh_tcp_forward(&mut self) -> &mut Self {
+        let disable_tcp_forward = String::from(
+            "sed -i -e '/^\\(#\\|\\)AllowTcpForwarding/s/^.*$/AllowTcpForwarding no/' /etc/ssh/sshd_config",
+        );
+        self.add_runcmd(disable_tcp_forward);
+        self
+    }
+
+    pub(crate) fn disallow_ssh_x11_forward(&mut self) -> &mut Self {
+        let disable_x11_forward = String::from(
+            "sed -i -e '/^\\(#\\|\\)X11Forwarding/s/^.*$/X11Forwarding no/' /etc/ssh/sshd_config",
+        );
+        self.add_runcmd(disable_x11_forward);
+        self
+    }
+
+    pub(crate) fn with_fail2ban(&mut self) -> &mut Self {
+        // Install package
+        self.add_package(String::from("fail2ban"));
+
+        // Configure ssh jail
+        let ssh_jail = String::from(
+            "[sshd]\nenabled = true\nport = ssh\nfilter = sshd\nlogpath = /var/log/auth.log\nmaxretry = 3\nbantime = 600",
+        );
+        let write_file = WriteFile {
+            path: String::from("/etc/fail2ban/jail.d/ssh.conf"),
+            content: ssh_jail,
+        };
+        self.add_write_file(write_file);
+
+        // Enable and start service
+        for enable_cmds in vec![
+            String::from("systemctl enable fail2ban"),
+            String::from("systemctl start fail2ban"),
+        ] {
+            self.add_runcmd(enable_cmds);
+        }
+        self
     }
 }
 
