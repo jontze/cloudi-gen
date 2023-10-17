@@ -2,6 +2,8 @@
 extern crate derive_builder;
 #[macro_use]
 extern crate serde;
+#[macro_use]
+extern crate miette;
 
 use clap::Parser;
 
@@ -41,7 +43,7 @@ struct Args {
     allow_ssh_agent_forward: bool,
 }
 
-fn main() {
+fn main() -> miette::Result<()> {
     let args = Args::parse();
     let mut cloud_init_builder = CloudDataBuilder::default();
 
@@ -58,7 +60,7 @@ fn main() {
                 user_builder.add_ssh_import_id(gh_import_id);
             }
         }
-        let user = user_builder.build().unwrap();
+        let user = user_builder.build()?;
         cloud_init_builder.users(vec![user]);
     };
 
@@ -89,7 +91,9 @@ fn main() {
         cloud_init_builder.with_fail2ban();
     }
 
-    let cloud_init = cloud_init_builder.build().unwrap();
+    let cloud_init = cloud_init_builder.build()?;
 
     cloud_init.print(args.pretty_print);
+
+    Ok(())
 }

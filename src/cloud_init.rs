@@ -1,4 +1,5 @@
 use bat::PrettyPrinter;
+use miette::{Context, IntoDiagnostic};
 
 #[derive(Default, Builder, Serialize, Debug, Clone)]
 #[builder(build_fn(private, name = "build_internal"))]
@@ -45,13 +46,28 @@ impl CloudData {
 }
 
 impl CloudDataBuilder {
-    pub(crate) fn build(mut self) -> Result<CloudData, CloudDataBuilderError> {
+    pub(crate) fn build(mut self) -> miette::Result<CloudData> {
+        // Ensure that the reboot command is the last command
         if let Some(runcmds) = &self.runcmd {
             if !runcmds.is_empty() {
                 self.add_runcmd(String::from("reboot"));
             }
         }
-        let cloud_data = self.build_internal()?;
+
+        // Throw a fancy miette error if there is no user
+        if self.users.is_none() {
+            return Err(miette!(
+                severity = miette::Severity::Error,
+                code = "no_user_provided",
+                help =
+                    "Add a user to the cloud-init data. Otherwise, you will not be able to login.\n\nExample: \n'cloud-init -u <username> -g <github_handle>'",
+                "Missing user in cloud-init data."
+            ));
+        }
+        let cloud_data = self
+            .build_internal()
+            .into_diagnostic()
+            .wrap_err("Constructing cloud-init data failed. Something is missing!")?;
         Ok(cloud_data)
     }
 
@@ -132,6 +148,7 @@ pub(crate) struct ChPasswd {
 }
 
 #[derive(Builder, Serialize, Debug, Clone, Default)]
+#[builder(build_fn(private, name = "build_internal"))]
 pub(crate) struct User {
     name: String,
     #[builder(default = "String::from(\"ALL=(ALL) NOPASSWD:ALL\")")]
@@ -141,6 +158,32 @@ pub(crate) struct User {
     #[builder(default = "String::from(\"/bin/bash\")")]
     shell: String,
     ssh_import_id: Vec<String>,
+}
+
+impl UserBuilder {
+    pub(crate) fn build(self) -> miette::Result<User> {
+        let missing_ssh_import_err = miette!(
+            severity = miette::Severity::Error,
+            code = "no_ssh_import_id_provided",
+            help = "Add a ssh import id to the user. Otherwise, you will not be able to login.\n\nExample: \n'cloud-init -u <username> -g <github_handle>'",
+            "Missing ssh import id for user."
+        );
+        // Throw a fancy miette error if there is no ssh import id provided
+        match &self.ssh_import_id {
+            Some(ssh_import_ids) => {
+                if ssh_import_ids.is_empty() {
+                    return Err(missing_ssh_import_err);
+                }
+            }
+            None => return Err(missing_ssh_import_err),
+        }
+
+        let user = self
+            .build_internal()
+            .into_diagnostic()
+            .wrap_err("Constructing user failed. Something is missing!")?;
+        Ok(user)
+    }
 }
 
 impl UserBuilder {
