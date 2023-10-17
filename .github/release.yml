@@ -1,0 +1,20 @@
+changelog:
+  categories:
+    - title: "Breaking changes 🚨"
+      labels:
+        - breaking
+    - title: "Improvements 🚀"
+      labels:
+        - enhancement
+    - title: "Bugs fixed 🐞"
+      labels:
+        - bug
+    - title: "Other changes 📦"
+      labels:
+        - "*"
+    - title: "Documentation 📚"
+      labels:
+        - documentation
+    - title: "Dependencies ⬆️"
+      labels:
+        - dependencies
