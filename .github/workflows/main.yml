@@ -1,0 +1,21 @@
+name: Main
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+      - develop
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  test:
+    name: Test
+    uses: jontze/.workflows/.github/workflows/rust_test.yaml@main
+    with:
+      build: true
+      unit-tests: false
