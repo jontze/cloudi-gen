@@ -1,0 +1,99 @@
+name: Release
+on:
+  push:
+    tags:
+      - "v*"
+
+env:
+  RUST_BACKTRACE: full
+  RUSTUP_MAX_RETRIES: 100
+  CARGO_INCREMENTAL: 0
+  CARGO_NET_RETRY: 100
+  CARGO_TERM_COLOR: always
+  PROJECT_NAME: cloudi-gen
+
+jobs:
+  build:
+    name: Build Binary for ${{ matrix.target }}
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          # 64-bit Linux
+          - x86_64-unknown-linux-gnu
+          # 64-bit Linux Static
+          - x86_64-unknown-linux-musl
+          # 64-bit macOS
+          - x86_64-apple-darwin
+          # ARM64 macOS
+          - aarch64-apple-darwin
+          # 64-bit Windows
+          - x86_64-pc-windows-msvc
+        # This expands the matrix variables for the target
+        # https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs#expanding-or-adding-matrix-configurations
+        include:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-20.04
+          - target: x86_64-unknown-linux-musl
+            os: ubuntu-latest
+          - target: x86_64-apple-darwin
+            os: macOS-latest
+          - target: aarch64-apple-darwin
+            os: macOS-latest
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+      - name: Extract Tag
+        id: tag
+        shell: bash
+        run: |
+          echo "NAME=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+      - name: Setup Cache for Rust
+        uses: Swatinem/rust-cache@v2
+        with:
+          prefix-key: "${{ matrix.target }}"
+      - name: Setup Rust for ${{ matrix.target }}
+        run: rustup target add ${{ matrix.target }}
+      - name: Install dependencies for musl build
+        if: matrix.target == 'x86_64-unknown-linux-musl'
+        run: sudo apt install -y musl-tools
+      - name: Build Binary
+        run: cargo build --release --target ${{ matrix.target }}
+      - name: Archive Binary
+        if: matrix.os != 'windows-latest'
+        working-directory: target/${{ matrix.target }}/release/
+        run: |
+          strip ${{ env.PROJECT_NAME }}
+          tar czvf ../../../${{ env.PROJECT_NAME }}-${{ steps.tag.outputs.name }}-${{ matrix.target }}.tar.gz ${{ env.PROJECT_NAME }}
+      - name: Archive Binary (windows)
+        if: matrix.os == 'windows-latest'
+        working-directory: target/${{ matrix.target }}/release/
+        run: |
+          strip ${{ env.PROJECT_NAME }}.exe
+          7z a ../../../${{ env.PROJECT_NAME }}-${{ steps.tag.outputs.name }}-${{ matrix.target }}.zip ${{ env.PROJECT_NAME }}.exe
+      - name: Upload Archive as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          name: ${{ env.PROJECT_NAME }}-${{ steps.tag.outputs.name }}-${{ matrix.target }}
+          path: ${{ env.PROJECT_NAME }}-${{ steps.tag.outputs.name }}-${{ matrix.target }}.*
+
+  release:
+    needs: build
+    name: Create Github Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Get Artifacts
+        uses: actions/download-artifact@v3
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ env.PROJECT_NAME }}-*/${{ env.PROJECT_NAME }}-*
+          generate_release_notes: true
