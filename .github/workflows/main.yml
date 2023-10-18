@@ -21,7 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install
-        uses: jontze/.workflows/conventional-versioning/action.yml@feat/conv-verion-docker-action
+        uses: jontze/.workflows/conventional-versioning@feat/conv-verion-docker-action
         with:
           version: v0.1.0
       - name: Verify
