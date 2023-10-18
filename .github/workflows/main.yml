@@ -13,9 +13,15 @@ on:
       - reopened
 
 jobs:
-  test:
-    name: Test
-    uses: jontze/.workflows/.github/workflows/rust_test.yaml@main
-    with:
-      build: true
-      unit-tests: false
+  tmp:
+    runs-on: ubuntu-latest
+    name: Tmp
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install
+        uses: jontze/.workflows/conventional-versioning/action.yml@feat/conv-verion-docker-action
+        with:
+          version: v0.1.0
+      - name: Verify
+        run: conventional-versioning --version
