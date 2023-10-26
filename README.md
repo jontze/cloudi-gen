@@ -20,7 +20,7 @@
 cloudi-gen -u jontze -g jontze -p curl -p jq > cloud-init.yml
 ```
 
-With this commend:
+With this command:
 
 - A user named `jontze` will be created on the cloud instance
 - The SSH keys of the GitHub user `jontze` will be imported
@@ -41,22 +41,8 @@ With this commend:
 
 If you have `cargo` installed, you can compile `cloudi-gen` from source:
 
-1. Clone the repository:
-
    ```bash
-   git clone https://github.com/jontze/cloudi-gen.git
+   cargo install --git https://github.com/jontze/cloudi-gen
    ```
 
-2. Navigate to the cloned repository:
-
-   ```bash
-    cd cloudi-gen
-   ```
-
-3. Compile and isntall the tool using `cargo`:
-
-   ```bash
-   cargo install --path .
-   ```
-
-4. You can now run `cloudi-gen` from your terminal!
+You can now run `cloudi-gen` from your terminal!
