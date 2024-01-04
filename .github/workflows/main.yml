@@ -19,3 +19,14 @@ jobs:
     with:
       build: true
       unit-tests: false
+
+  next:
+    name: Release
+    needs: 
+      - test
+    # Only on push to main
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: write      
+    uses: jontze/.workflows/.github/workflows/rust_release.yaml@main
+    secrets: inherit
