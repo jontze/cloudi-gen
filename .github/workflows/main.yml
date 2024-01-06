@@ -29,4 +29,7 @@ jobs:
     permissions:
       contents: write      
     uses: jontze/.workflows/.github/workflows/rust_release.yaml@main
-    secrets: inherit
+    with:
+      use-deploy-key: true
+    secrets:
+      DEPLOY_KEY: ${{ secrets.CI_TAG_DEPLOY_KEY }}
