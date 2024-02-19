@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 bat = "0.24.0"
-clap = { version = "4.5.0", features = ["derive"] }
+clap = { version = "4.5.1", features = ["derive"] }
 derive_builder = "0.13.1"
 miette = { version = "7.1.0", features = ["fancy"] }
 serde = { version = "1.0.196", features = ["derive"] }
