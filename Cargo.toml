@@ -9,6 +9,6 @@ edition = "2021"
 bat = "0.24.0"
 clap = { version = "4.5.2", features = ["derive"] }
 derive_builder = "0.20.0"
-miette = { version = "7.1.0", features = ["fancy"] }
+miette = { version = "7.2.0", features = ["fancy"] }
 serde = { version = "1.0.197", features = ["derive"] }
 serde_yaml = "0.9.32"
