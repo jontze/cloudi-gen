@@ -11,4 +11,4 @@ clap = { version = "4.5.3", features = ["derive"] }
 derive_builder = "0.20.0"
 miette = { version = "7.2.0", features = ["fancy"] }
 serde = { version = "1.0.197", features = ["derive"] }
-serde_yaml = "0.9.33"
+serde_yaml = "0.9.34"
