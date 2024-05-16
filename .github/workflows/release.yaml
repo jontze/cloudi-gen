@@ -97,3 +97,18 @@ jobs:
         with:
           files: ${{ env.PROJECT_NAME }}-*/${{ env.PROJECT_NAME }}-*
           generate_release_notes: true
+
+  publish:
+    name: Publish Crate to private Registry
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Cache for Rust
+        uses: Swatinem/rust-cache@v2
+      - name: Publish Crate
+        env:
+          CARGO_REGISTRIES_JONTZE_INDEX: ${{ secrets.REGISTRY_URL }}
+        run: cargo publish --token ${{ secrets.REGISTRY_TOKEN }}
