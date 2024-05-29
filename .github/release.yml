@@ -9,12 +9,12 @@ changelog:
     - title: "Bugs fixed 🐞"
       labels:
         - bug
-    - title: "Other changes 📦"
-      labels:
-        - "*"
     - title: "Documentation 📚"
       labels:
         - documentation
     - title: "Dependencies ⬆️"
       labels:
         - dependencies
+    - title: "Other changes 📦"
+      labels:
+        - "*"
