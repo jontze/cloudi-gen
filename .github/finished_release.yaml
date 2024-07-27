@@ -1,0 +1,13 @@
+---
+name: Post Release
+on:
+  release:
+    types: 
+      - published
+
+jobs:
+  changelog_gen:
+    name: "Generate Changelog"
+    uses: jontze/.workflows/.github/workflows/changelog_gen.yaml@main
+    with:
+      ref: main
