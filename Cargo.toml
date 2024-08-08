@@ -9,8 +9,8 @@ publish = ["jontze"]
 
 [dependencies]
 bat = "0.24.0"
-clap = { version = "4.5.13", features = ["derive"] }
+clap = { version = "4.5.14", features = ["derive"] }
 derive_builder = "0.20.0"
 miette = { version = "7.2.0", features = ["fancy"] }
-serde = { version = "1.0.204", features = ["derive"] }
+serde = { version = "1.0.205", features = ["derive"] }
 serde_yaml = "0.9.34"
