@@ -23,17 +23,3 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-  
-  - package-ecosystem: "docker" # See documentation for possible values
-    directory: "/" # Location of package manifests
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "fix(deps)"
-      prefix-development: "chore(dev-deps)"          
-    groups:
-      runtime-dependencies:
-        dependency-type: "production"
-        update-types:
-          - "patch"
-          - "minor"
