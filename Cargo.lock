@@ -277,7 +277,7 @@ dependencies = [
 
 [[package]]
 name = "cloudi-gen"
-version = "0.2.25"
+version = "0.2.26"
 dependencies = [
  "bat",
  "clap",
