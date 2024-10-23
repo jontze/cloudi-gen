@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.27] - 2024-10-23
+
+### 🐛 Bug Fixes
+
+- *(deps)* Bump serde in the runtime-dependencies group
+
+### ⚙️ Miscellaneous Tasks
+
+- Update changelog [skip ci]
+- *(version)* Bump version to 0.2.27
+
 ## [0.2.26] - 2024-10-09
 
 ### 🐛 Bug Fixes
