@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.38] - 2025-01-08
+
+### 🐛 Bug Fixes
+
+- *(deps)* Bump bat in the runtime-dependencies group
+
+### ⚙️ Miscellaneous Tasks
+
+- Update changelog [skip ci]
+- *(version)* Bump version to 0.2.38
+
 ## [0.2.37] - 2025-01-07
 
 ### 🐛 Bug Fixes
