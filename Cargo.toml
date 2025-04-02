@@ -1,6 +1,6 @@
 [package]
 name = "cloudi-gen"
-version = "0.2.49"
+version = "0.2.50"
 edition = "2021"
 # Avoid publishing to crates.io
 publish = ["jontze"]
