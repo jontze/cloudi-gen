@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.52] - 2025-04-28
+
+### 🐛 Bug Fixes
+
+- *(deps)* Bump the runtime-dependencies group across 1 directory with 2 updates
+
+### ⚙️ Miscellaneous Tasks
+
+- Update changelog [skip ci]
+- *(release)* Bump ubuntu build version to 22.04 on glibc target
+- *(version)* Bump version to 0.2.52
+
 ## [0.2.51] - 2025-04-15
 
 ### 🐛 Bug Fixes
