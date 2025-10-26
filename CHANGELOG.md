@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.67] - 2025-10-26
+
+### 🐛 Bug Fixes
+
+- *(deps)* Bump bat from 0.25.0 to 0.26.0
+
+### ⚙️ Miscellaneous Tasks
+
+- Update changelog [skip ci]
+- *(version)* Bump version to 0.2.67
+
 ## [0.2.66] - 2025-10-21
 
 ### 🐛 Bug Fixes
