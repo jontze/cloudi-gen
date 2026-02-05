@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.73] - 2026-02-05
+
+### 🐛 Bug Fixes
+
+- *(deps)* Bump git2 from 0.20.2 to 0.20.4
+
+### ⚙️ Miscellaneous Tasks
+
+- *(version)* Bump version to 0.2.73
+
+## [0.2.72] - 2026-02-05
+
+### 🐛 Bug Fixes
+
+- *(deps)* Bump time from 0.3.36 to 0.3.47
+
+### ⚙️ Miscellaneous Tasks
+
+- Update changelog [skip ci]
+- *(version)* Bump version to 0.2.72
+
 ## [0.2.71] - 2026-02-03
 
 ### 🐛 Bug Fixes
