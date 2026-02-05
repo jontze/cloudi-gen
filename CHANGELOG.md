@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### ⚙️ Miscellaneous Tasks
+
+- Update changelog [skip ci]
+
 ## [0.2.73] - 2026-02-05
 
 ### 🐛 Bug Fixes
