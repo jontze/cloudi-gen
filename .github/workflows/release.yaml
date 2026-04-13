@@ -93,7 +93,7 @@ jobs:
       - name: Get Artifacts
         uses: actions/download-artifact@v8
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: ${{ env.PROJECT_NAME }}-*/${{ env.PROJECT_NAME }}-*
           generate_release_notes: true
